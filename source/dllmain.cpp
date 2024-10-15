@@ -7,22 +7,19 @@
 #include "../feautures/aimbot.h"
 #include "../classes/classes.h"
 
-DWORD WINAPI loop(LPVOID lpParam)
+void loop(const HMODULE hModule) noexcept
 {
-    HMODULE hModule = (HMODULE)lpParam;
-
     entitylist.loop();
     
     FreeLibraryAndExitThread(hModule, 0);
 }
 
-DWORD WINAPI hook(LPVOID lpParam)
+void hook(const HMODULE hModule) noexcept
 {
-    HMODULE hModule = (HMODULE)lpParam;
-
     Sleep(1500);
+
     Aimbot::do_aimbot();
-    
+   
     FreeLibraryAndExitThread(hModule, 0);
 }
 
@@ -31,18 +28,17 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
                      )
 {
-    switch (ul_reason_for_call)
+    if (ul_reason_for_call == 1)
     {
-    case DLL_PROCESS_ATTACH:
-        // Create the threads
-        CreateThread(nullptr, 0, loop, hModule, 0, nullptr);
-        CreateThread(nullptr, 0, hook, hModule, 0, nullptr);
-        break;
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
+        DisableThreadLibraryCalls(hModule);
+        const auto thread2 = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(hook), hModule, 0, nullptr);
+        const auto thread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(loop), hModule, 0, nullptr);
+        if (thread)
+            CloseHandle(thread);
+        if (thread2)
+            CloseHandle(thread2);
     }
-    return TRUE;
+
+    return 1;
 }
 
