@@ -12,9 +12,14 @@ void EntityList::loop()
 	} while (!exe_base_address && !local_player && !entity_list);
 
 
-	while (true)
+	while (running)
 	{
 		num_players = (*(unsigned int*)(exe_base_address + 0x191FD4)); // set each loop so if we swithc maps it can get new amount of players.
+
+		if (GetAsyncKeyState('M') & 0x1)
+		{
+			running = false;
+		}
 
 		if (num_players == 0)
 		{
@@ -24,7 +29,7 @@ void EntityList::loop()
 
 		std::vector<Player*> list;
 
-		Player* enemy;
+		Player* enemy{ NULL };
 
 		for (unsigned int i = 1; i <= num_players; i++)
 		{

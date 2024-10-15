@@ -4,6 +4,7 @@
 #include <vector>
 #include <Windows.h>
 
+inline bool running{ true };
 
 class Vector3
 {

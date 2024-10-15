@@ -4,7 +4,7 @@
 
 void Aimbot::do_aimbot()
 {
-    while (true)
+    while (running)
     {
         // These variables will be used to hold the closest enemy to us
         float closest_player = -1.0f;
@@ -31,23 +31,17 @@ void Aimbot::do_aimbot()
             if (Player->health > 100 || Player->health <= 0)
                 continue;
             
-            float abspos_x = Player->o.x - entitylist.local_player->o.x;
+            float abspos_x = Math::origin_calc(Player->o.x, entitylist.local_player->o.x);
 
-            float abspos_y = Player->o.y - entitylist.local_player->o.y;
+            float abspos_y = Math::origin_calc(Player->o.y, entitylist.local_player->o.y);
 
-            float abspos_z = Player->o.z - entitylist.local_player->o.z;
+            float abspos_z = Math::origin_calc(Player->o.z, entitylist.local_player->o.z);
 
-            // Calculate the yaw
             float azimuth_xy = atan2f(abspos_y, abspos_x);
-            // Convert to degrees
-            float yaw = (float)(azimuth_xy * (180.0 / M_PI));
-            // Add 90 since the game assumes direct north is 90 degrees
-            closest_yaw = yaw + 90;
-            // don't look straight at the air when close to an enemy
 
-            // Calculate the pitch
-            // Since Z values are so limited, pick the larger between x and y to ensure that we 
-            // don't look straight at the air when close to an enemy
+            float yaw = Math::radians_to_degrees(azimuth_xy);
+            closest_yaw = yaw + 90;
+
             if (abspos_y < 0) {
                 abspos_y *= -1;
             }
@@ -59,10 +53,8 @@ void Aimbot::do_aimbot()
             }
 
             float azimuth_z = atan2f(abspos_z, abspos_y);
-            // Covert the value to degrees
-            float pitch = (float)(azimuth_z * (180.0 / M_PI));
-           
-            // compares last loops enemy to new loop enemy seeing if closer 
+            float pitch = Math::radians_to_degrees(azimuth_z);
+
             float temp_distance = Math::euclidean_distance(abspos_x, abspos_y);
 
             if (closest_player == -1.0f || temp_distance < closest_player)
