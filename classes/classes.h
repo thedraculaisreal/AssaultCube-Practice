@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
-#include "../source/constants.h"
+#include <Windows.h>
 
 
 class Vector3
@@ -24,8 +24,8 @@ public:
     char pad_0040[172]; //0x0040
     int32_t health; //0x00EC
     char pad_00F0[278]; //0x00F0
-    char name[20]; //0x0204
-    char pad_0208[252]; //0x0208
+    char name[16]; //0x0204
+    char pad_0208[256]; //0x0208
     int32_t Team; //0x0308
 }; //Size: 0x0450
 
@@ -33,7 +33,12 @@ class EntityList
 {
 public:
 
-    std::vector<Player*> entities{ };
+    uintptr_t exe_base_address{ NULL };
+    Player* local_player{ NULL };
+    unsigned int num_players{ NULL };
+
+
+    std::vector<Player*> entities{ num_players };
 
     void loop();
 };

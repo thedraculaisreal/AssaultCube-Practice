@@ -170,15 +170,14 @@
     <ClCompile Include="feautures\aimbot.cpp" />
     <ClCompile Include="feautures\nodamage.cpp" />
     <ClCompile Include="math\math.cpp" />
-    <ClCompile Include="source\constants.cpp" />
     <ClCompile Include="source\dllmain.cpp" />
+    <ClCompile Include="classes\classes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="feautures\aimbot.h" />
     <ClInclude Include="feautures\nodamage.h" />
     <ClInclude Include="math\math.h" />
-    <ClInclude Include="source\constants.h" />
-    <ClInclude Include="source\gencode.h" />
+    <ClInclude Include="classes\classes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

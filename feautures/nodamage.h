@@ -1,5 +1,5 @@
 #pragma once
-#include "../source/constants.h"
+#include "../classes/classes.h"
 
 namespace NoDamage
 {

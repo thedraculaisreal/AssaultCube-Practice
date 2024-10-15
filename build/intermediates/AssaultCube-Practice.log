@@ -1,9 +1,4 @@
 ﻿  aimbot.cpp
-  nodamage.cpp
-  math.cpp
-  constants.cpp
-  dllmain.cpp
-  Generating Code...
   AssaultCube-Practice.vcxproj -> C:\Users\schwarztoter\source\repos\AssaultCube-Practice\build\AssaultCube-Practice.dll
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.

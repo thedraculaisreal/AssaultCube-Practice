@@ -1,5 +1,5 @@
 #pragma once
-#include "../source/constants.h"
+#include "../math/math.h"
 
 #define MAX_PLAYERS 32
 
@@ -12,7 +12,7 @@ namespace Aimbot
 	inline DWORD ret_address{ 0x0046138D };
 	inline DWORD text_address{ 0x0046E640 };
 	inline const char* empty_text = " ";
-	inline const char* text = "";
+	inline const char* text = "Enemy";
 	inline DWORD x = 0;
 	inline DWORD y = 0;
 

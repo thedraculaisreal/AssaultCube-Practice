@@ -15,12 +15,12 @@ void Aimbot::do_aimbot()
         float closest_yaw = NULL;
         float closest_pitch = NULL;
 
-        int i = 1;
+        unsigned int i = 1;
 
         for (auto &Player: entity_list.entities)
         {
 
-            if (!local_player)
+            if (!entity_list.local_player)
                 continue;
 
             if (!Player)
@@ -29,11 +29,11 @@ void Aimbot::do_aimbot()
             if (Player->health > 100 || Player->health <= 0)
                 continue;
             
-            float abspos_x = Player->o.x - local_player->o.x;
+            float abspos_x = Player->o.x - entity_list.local_player->o.x;
 
-            float abspos_y = Player->o.y - local_player->o.y;
+            float abspos_y = Player->o.y - entity_list.local_player->o.y;
 
-            float abspos_z = Player->o.z - local_player->o.z;
+            float abspos_z = Player->o.z - entity_list.local_player->o.z;
 
             // Calculate the yaw
             float azimuth_xy = atan2f(abspos_y, abspos_x);
@@ -60,8 +60,8 @@ void Aimbot::do_aimbot()
             // Covert the value to degrees
             float pitch = (float)(azimuth_z * (180.0 / M_PI));
 
-            float yaw_diff = local_player->yaw - yaw;
-            float pitch_diff = local_player->pitch - pitch;
+            float yaw_diff = entity_list.local_player->yaw - yaw;
+            float pitch_diff = entity_list.local_player->pitch - pitch;
 
             if (yaw_diff > 180)
                 yaw_diff -= 360;
@@ -75,7 +75,7 @@ void Aimbot::do_aimbot()
 
             x_values[i] = (DWORD)(1200 + (yaw_diff * -30));
             y_values[i] = (DWORD)(900 + (pitch_diff * 25));
-            names[i] = Player->name;
+            //names[i] = Player->name; doesnt work rn IDK WHY :P
            
             // compares last loops enemy to new loop enemy seeing if closer 
             float temp_distance = Math::euclidean_distance(abspos_x, abspos_y);
@@ -87,8 +87,15 @@ void Aimbot::do_aimbot()
                 closest_pitch = pitch;
             }
 
-            i++;
+            if (i < entity_list.num_players)
+            {
+                i++;
+            }
 
+            if (i == entity_list.num_players)
+            {
+                i = 1;
+            }
         }
 
         if (closest_pitch == NULL || closest_yaw == NULL)
@@ -97,8 +104,8 @@ void Aimbot::do_aimbot()
         if (!GetAsyncKeyState(VK_XBUTTON2))
             continue;
 
-        local_player->pitch = closest_pitch;
-        local_player->yaw = closest_yaw;
+        entity_list.local_player->pitch = closest_pitch;
+        entity_list.local_player->yaw = closest_yaw;
 
         Sleep(1);
     }
@@ -115,11 +122,10 @@ __declspec(naked) void Aimbot::esp_code_cave()
         pushad
     }
 
-    for (int i = 0; i < num_players; i++)
+    for (unsigned int i = 1; i <= entity_list.num_players; i++)
     {
         x = x_values[i];
         y = y_values[i];
-        text = names[i];
 
         if (x > 2400 || x < 0 || y < 0 || y > 1800)
         {
