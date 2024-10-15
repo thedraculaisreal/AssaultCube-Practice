@@ -4,7 +4,6 @@
 #include "constants.h"
 #include "../feautures/nodamage.h"
 #include "../feautures/aimbot.h"
-#include "../feautures/esp.h"
 
 
 void loop()
@@ -49,52 +48,8 @@ void hook()
     
     exe_base_address = (uintptr_t)GetModuleHandle(nullptr);
     local_player = *(Player**)(exe_base_address + 0x17E0A8);
-    Aimbot::aimbot();
+    Aimbot::do_aimbot();
      
-}
-
-void console()
-{
-    AllocConsole();
-
-    FILE* stream;
-    freopen_s(&stream, "CONOUT$", "w", stdout);
-    freopen_s(&stream, "CONOUT$", "w", stderr);
-    freopen_s(&stream, "CONIN$", "r", stdin);
-
-    std::cout << "Console successfully allocated!" << std::endl;
-
-    std::cout << "BaseAddress: " << exe_base_address << '\n';
-
-    std::cout << "LocalPlayerAddr: " << local_player << '\n';
-
-    std::cout << "LocalPlayerHealth: " << local_player->health << '\n';
-
-    std::cout << "LocalPlayerPos: " << local_player->pos.x << ' ' <<  local_player->pos.y << ' ' << local_player->pos.z << '\n';
-
-    while (true)
-    {
-        std::string input;
-        std::cin >> input;
-        
-        if (input == "Test")
-        {
-            local_player->health = 200;
-        }
-
-        if (input == "players")
-        {
-            std::cout << num_players << std::endl;
-        }
-
-        if (input == "nodamage")
-        {
-            NoDamage::injected_thread();
-            NoDamage::injected_thread2();
-        }
-    }
-    
-    FreeConsole();
 }
 
 
@@ -107,10 +62,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
     case DLL_PROCESS_ATTACH:
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)hook, nullptr, NULL, nullptr);
-        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)console, nullptr, NULL, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)loop, nullptr, NULL, nullptr);
-        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)ESP::injected_thread, nullptr, NULL, nullptr);
-        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)ESP::code_cave_thread, nullptr, NULL, nullptr);
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:

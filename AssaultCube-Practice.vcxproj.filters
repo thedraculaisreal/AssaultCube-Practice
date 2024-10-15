@@ -27,7 +27,7 @@
     <ClCompile Include="feautures\aimbot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="feautures\esp.cpp">
+    <ClCompile Include="math\math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,7 +44,7 @@
     <ClInclude Include="feautures\aimbot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="feautures\esp.h">
+    <ClInclude Include="math\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

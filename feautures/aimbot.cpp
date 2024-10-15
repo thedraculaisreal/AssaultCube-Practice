@@ -1,7 +1,5 @@
 #include "aimbot.h"
-#include "../source/constants.h"
-#include <stdio.h>
-#include <iostream>
+
 #define M_PI 3.14159265358979323846
 
 
@@ -9,7 +7,7 @@ float euclidean_distance(float x, float y) {
     return sqrtf((x * x) + (y * y));
 }
 
-void Aimbot::aimbot()
+void Aimbot::do_aimbot()
 {
 
     Sleep(1000);
@@ -21,6 +19,8 @@ void Aimbot::aimbot()
         float closest_player = -1.0f;
         float closest_yaw = NULL;
         float closest_pitch = NULL;
+
+        int i = 1;
 
         for (auto &Player: entity_list.entities)
         {
@@ -64,9 +64,26 @@ void Aimbot::aimbot()
             float azimuth_z = atan2f(abspos_z, abspos_y);
             // Covert the value to degrees
             float pitch = (float)(azimuth_z * (180.0 / M_PI));
+
+            float yaw_diff = local_player->yaw - yaw;
+            float pitch_diff = local_player->pitch - pitch;
+
+            if (yaw_diff > 180)
+                yaw_diff -= 360;
+            if (yaw_diff < -180)
+                yaw_diff -= yaw_diff + 360;
+
+            if (pitch_diff > 90)
+                pitch_diff -= 180;
+            if (pitch_diff < -90)
+                pitch_diff += 180;
+
+            x_values[i] = (DWORD)(1200 + (yaw_diff * -30));
+            y_values[i] = (DWORD)(900 + (pitch_diff * 25));
+            names[i] = Player->name;
            
             // compares last loops enemy to new loop enemy seeing if closer 
-            float temp_distance = euclidean_distance(abspos_x, abspos_y);
+            float temp_distance = Math::euclidean_distance(abspos_x, abspos_y);
 
             if (closest_player == -1.0f || temp_distance < closest_player)
             {
@@ -74,6 +91,8 @@ void Aimbot::aimbot()
                 closest_yaw = yaw + 90;
                 closest_pitch = pitch;
             }
+
+            i++;
 
         }
 
@@ -88,4 +107,61 @@ void Aimbot::aimbot()
 
         Sleep(1);
     }
+}
+
+
+__declspec(naked) void Aimbot::esp_code_cave()
+{
+
+    __asm
+    {
+        push empty_text
+        call text_address
+        pushad
+    }
+
+    for (int i = 0; i < num_players; i++)
+    {
+        x = x_values[i];
+        y = y_values[i];
+        text = names[i];
+
+        if (x > 2400 || x < 0 || y < 0 || y > 1800)
+        {
+            text = "";
+        }
+
+        x_values[i] += 200;
+
+        if (text == NULL)
+        {
+            continue;
+        }
+
+        __asm
+        {
+            push y
+            push x
+            push text
+            call text_address
+            add esp, 0xC
+        }
+
+        Sleep(1);
+    }
+
+    __asm
+    {
+        popad
+        jmp ret_address
+    }
+
+}
+
+void Aimbot::esp_code_cave_thread()
+{
+    unsigned char* hook_location = (unsigned char*)0x00461382;
+    VirtualProtect((void*)hook_location, 5, PAGE_EXECUTE_READWRITE, &old_protect);
+    *hook_location = 0xE9;
+    *(DWORD*)(hook_location + 1) = (DWORD)&esp_code_cave - ((DWORD)hook_location + 5);
 }
