@@ -10,7 +10,7 @@ void EntityList::loop()
 
 		for (unsigned int i = 1; i <= num_players; i++)
 		{
-			if (num_players == 0)
+			if (entity_list.num_players > 32 || entity_list.num_players <= 0)
 				continue;
 
 			DWORD* entity_list = (DWORD*)(exe_base_address + 0x18AC04);
@@ -24,9 +24,9 @@ void EntityList::loop()
 				continue;
 
 			entities.push_back(enemy);
+			Sleep(1);
 		}
 
-		Sleep(1000);
 
 		entities.clear();
 	}

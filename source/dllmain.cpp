@@ -28,6 +28,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_PROCESS_ATTACH:
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)hook, nullptr, NULL, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)loop, nullptr, NULL, nullptr);
+        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)Aimbot::esp_code_cave_thread, nullptr, NULL, nullptr);
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:

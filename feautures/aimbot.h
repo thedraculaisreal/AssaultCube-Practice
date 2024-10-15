@@ -15,6 +15,7 @@ namespace Aimbot
 	inline const char* text = "Enemy";
 	inline DWORD x = 0;
 	inline DWORD y = 0;
+	inline unsigned int player_index = 0;
 
 	void esp_code_cave_thread();
 

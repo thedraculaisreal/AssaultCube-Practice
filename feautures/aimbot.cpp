@@ -15,10 +15,13 @@ void Aimbot::do_aimbot()
         float closest_yaw = NULL;
         float closest_pitch = NULL;
 
-        unsigned int i = 1;
+        player_index = 1;
 
         for (auto &Player: entity_list.entities)
         {
+
+            if (entity_list.num_players > 32 || entity_list.num_players <= 0)
+                continue;
 
             if (!entity_list.local_player)
                 continue;
@@ -60,8 +63,8 @@ void Aimbot::do_aimbot()
             // Covert the value to degrees
             float pitch = (float)(azimuth_z * (180.0 / M_PI));
 
-            float yaw_diff = entity_list.local_player->yaw - yaw;
-            float pitch_diff = entity_list.local_player->pitch - pitch;
+            float yaw_diff = entity_list.local_player->yaw - closest_yaw;
+            float pitch_diff = entity_list.local_player->pitch - closest_pitch;
 
             if (yaw_diff > 180)
                 yaw_diff -= 360;
@@ -73,9 +76,9 @@ void Aimbot::do_aimbot()
             if (pitch_diff < -90)
                 pitch_diff += 180;
 
-            x_values[i] = (DWORD)(1200 + (yaw_diff * -30));
-            y_values[i] = (DWORD)(900 + (pitch_diff * 25));
-            //names[i] = Player->name; doesnt work rn IDK WHY :P
+            x_values[player_index] = (DWORD)(1200 + (yaw_diff * -30));
+            y_values[player_index] = (DWORD)(900 + (pitch_diff * 25));
+            names[player_index] = Player->name; //doesnt work rn IDK WHY :P
            
             // compares last loops enemy to new loop enemy seeing if closer 
             float temp_distance = Math::euclidean_distance(abspos_x, abspos_y);
@@ -87,14 +90,14 @@ void Aimbot::do_aimbot()
                 closest_pitch = pitch;
             }
 
-            if (i < entity_list.num_players)
+            if (player_index < entity_list.num_players)
             {
-                i++;
+                player_index++;
             }
 
-            if (i == entity_list.num_players)
+            if (player_index >= entity_list.num_players)
             {
-                i = 1;
+                player_index = 1;
             }
         }
 
@@ -122,19 +125,24 @@ __declspec(naked) void Aimbot::esp_code_cave()
         pushad
     }
 
-    for (unsigned int i = 1; i <= entity_list.num_players; i++)
+    for (auto& Player : entity_list.entities)
     {
-        x = x_values[i];
-        y = y_values[i];
+
+        if (player_index <= 0)
+            continue;
+
+        x = x_values[player_index];
+        y = y_values[player_index];
+        text = names[player_index];
 
         if (x > 2400 || x < 0 || y < 0 || y > 1800)
         {
-            text = "";
+            continue;
         }
 
-        x_values[i] += 200;
+        x_values[player_index] += 200;
 
-        if (text == NULL)
+        if (!text)
         {
             continue;
         }
@@ -161,6 +169,7 @@ __declspec(naked) void Aimbot::esp_code_cave()
 
 void Aimbot::esp_code_cave_thread()
 {
+    Sleep(2000);
     unsigned char* hook_location = (unsigned char*)0x00461382;
     VirtualProtect((void*)hook_location, 5, PAGE_EXECUTE_READWRITE, &old_protect);
     *hook_location = 0xE9;
