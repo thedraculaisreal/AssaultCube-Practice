@@ -2,11 +2,6 @@
 
 #define M_PI 3.14159265358979323846
 
-
-float euclidean_distance(float x, float y) {
-    return sqrtf((x * x) + (y * y));
-}
-
 void Aimbot::do_aimbot()
 {
 
