@@ -4,39 +4,38 @@
 
 void Aimbot::do_aimbot()
 {
-
-    Sleep(1000);
-
     while (true)
     {
-
         // These variables will be used to hold the closest enemy to us
         float closest_player = -1.0f;
         float closest_yaw = NULL;
         float closest_pitch = NULL;
 
-        player_index = 1;
+        player_index = 1;   
 
-        for (auto &Player: entity_list.entities)
+        if (entitylist.num_players == 0)
+        {
+            Sleep(1000);
+            continue;
+        }
+
+        for (const auto &Player: entitylist.entities)
         {
 
-            if (entity_list.num_players > 32 || entity_list.num_players <= 0)
+            if (!entitylist.local_player)
                 continue;
 
-            if (!entity_list.local_player)
-                continue;
-
-            if (!Player)
+            if (Player == NULL || !Player)
                 continue;
 
             if (Player->health > 100 || Player->health <= 0)
                 continue;
             
-            float abspos_x = Player->o.x - entity_list.local_player->o.x;
+            float abspos_x = Player->o.x - entitylist.local_player->o.x;
 
-            float abspos_y = Player->o.y - entity_list.local_player->o.y;
+            float abspos_y = Player->o.y - entitylist.local_player->o.y;
 
-            float abspos_z = Player->o.z - entity_list.local_player->o.z;
+            float abspos_z = Player->o.z - entitylist.local_player->o.z;
 
             // Calculate the yaw
             float azimuth_xy = atan2f(abspos_y, abspos_x);
@@ -62,23 +61,6 @@ void Aimbot::do_aimbot()
             float azimuth_z = atan2f(abspos_z, abspos_y);
             // Covert the value to degrees
             float pitch = (float)(azimuth_z * (180.0 / M_PI));
-
-            float yaw_diff = entity_list.local_player->yaw - closest_yaw;
-            float pitch_diff = entity_list.local_player->pitch - closest_pitch;
-
-            if (yaw_diff > 180)
-                yaw_diff -= 360;
-            if (yaw_diff < -180)
-                yaw_diff -= yaw_diff + 360;
-
-            if (pitch_diff > 90)
-                pitch_diff -= 180;
-            if (pitch_diff < -90)
-                pitch_diff += 180;
-
-            x_values[player_index] = (DWORD)(1200 + (yaw_diff * -30));
-            y_values[player_index] = (DWORD)(900 + (pitch_diff * 25));
-            names[player_index] = Player->name; //doesnt work rn IDK WHY :P
            
             // compares last loops enemy to new loop enemy seeing if closer 
             float temp_distance = Math::euclidean_distance(abspos_x, abspos_y);
@@ -90,12 +72,12 @@ void Aimbot::do_aimbot()
                 closest_pitch = pitch;
             }
 
-            if (player_index < entity_list.num_players)
+            if (player_index < entitylist.num_players)
             {
                 player_index++;
             }
 
-            if (player_index >= entity_list.num_players)
+            if (player_index >= entitylist.num_players)
             {
                 player_index = 1;
             }
@@ -107,71 +89,9 @@ void Aimbot::do_aimbot()
         if (!GetAsyncKeyState(VK_XBUTTON2))
             continue;
 
-        entity_list.local_player->pitch = closest_pitch;
-        entity_list.local_player->yaw = closest_yaw;
+        entitylist.local_player->pitch = closest_pitch;
+        entitylist.local_player->yaw = closest_yaw;
 
         Sleep(1);
     }
-}
-
-
-__declspec(naked) void Aimbot::esp_code_cave()
-{
-
-    __asm
-    {
-        push empty_text
-        call text_address
-        pushad
-    }
-
-    for (auto& Player : entity_list.entities)
-    {
-
-        if (player_index <= 0)
-            continue;
-
-        x = x_values[player_index];
-        y = y_values[player_index];
-        text = names[player_index];
-
-        if (x > 2400 || x < 0 || y < 0 || y > 1800)
-        {
-            continue;
-        }
-
-        x_values[player_index] += 200;
-
-        if (!text)
-        {
-            continue;
-        }
-
-        __asm
-        {
-            push y
-            push x
-            push text
-            call text_address
-            add esp, 0xC
-        }
-
-        Sleep(1);
-    }
-
-    __asm
-    {
-        popad
-        jmp ret_address
-    }
-
-}
-
-void Aimbot::esp_code_cave_thread()
-{
-    Sleep(2000);
-    unsigned char* hook_location = (unsigned char*)0x00461382;
-    VirtualProtect((void*)hook_location, 5, PAGE_EXECUTE_READWRITE, &old_protect);
-    *hook_location = 0xE9;
-    *(DWORD*)(hook_location + 1) = (DWORD)&esp_code_cave - ((DWORD)hook_location + 5);
 }
