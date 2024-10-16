@@ -34,7 +34,7 @@ public:
 
     uintptr_t exe_base_address{ NULL };
     Player* local_player{ NULL };
-    unsigned int num_players{ NULL };
+    int num_players{ NULL };
     DWORD* entity_list{ NULL };
 
 

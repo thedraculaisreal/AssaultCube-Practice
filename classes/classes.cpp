@@ -14,7 +14,7 @@ void EntityList::loop()
 
 	while (true)
 	{
-		num_players = (*(unsigned int*)(exe_base_address + 0x191FD4)); // set each loop so if we swithc maps it can get new amount of players.
+		num_players = (*(int*)(exe_base_address + 0x191FD4)); // set each loop so if we swithc maps it can get new amount of players.
 
 		if (num_players == 0)
 		{
@@ -26,7 +26,7 @@ void EntityList::loop()
 
 		Player* enemy{ NULL };
 
-		for (unsigned int i = 1; i <= num_players; i++)
+		for (int i = 1; i <= num_players; i++)
 		{
 			if (i > num_players)
 				continue;

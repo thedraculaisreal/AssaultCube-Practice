@@ -19,6 +19,8 @@ void hook(const HMODULE hModule) noexcept
     Sleep(1500);
 
     Aimbot::do_aimbot();
+
+    Sleep(1000);
    
     FreeLibraryAndExitThread(hModule, 0);
 }

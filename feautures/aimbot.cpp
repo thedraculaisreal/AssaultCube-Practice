@@ -4,7 +4,7 @@
 
 void Aimbot::do_aimbot()
 {
-    while (true)
+    while (!GetAsyncKeyState(VK_DELETE))
     {
         // These variables will be used to hold the closest enemy to us
         float closest_player = -1.0f;
