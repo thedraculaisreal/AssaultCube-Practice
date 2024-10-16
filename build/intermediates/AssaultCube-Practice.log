@@ -1,10 +1,9 @@
-﻿  aimbot.cpp
-  nodamage.cpp
-  math.cpp
-  dllmain.cpp
-  classes.cpp
-  Generating Code...
-  LINK : C:\Users\schwarztoter\source\repos\AssaultCube-Practice\build\AssaultCube-Practice.dll not found or not built by the last incremental link; performing full link
+﻿  dllmain.cpp
+  Generating code
+  1 of 540 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    6 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
   AssaultCube-Practice.vcxproj -> C:\Users\schwarztoter\source\repos\AssaultCube-Practice\build\AssaultCube-Practice.dll
   'pwsh.exe' is not recognized as an internal or external command,
   operable program or batch file.

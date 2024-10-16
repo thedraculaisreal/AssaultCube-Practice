@@ -4,38 +4,43 @@
 
 void Aimbot::do_aimbot()
 {
-    while (!GetAsyncKeyState(VK_DELETE))
+    while (!GetAsyncKeyState(VK_DELETE) & 0x1)
     {
         // These variables will be used to hold the closest enemy to us
         float closest_player = -1.0f;
         float closest_yaw = NULL;
         float closest_pitch = NULL;
 
-        player_index = 1;   
+        do {
 
-        if (entitylist.num_players == 0)
+            exe_base_address = (uintptr_t)GetModuleHandle(nullptr);
+            local_player = *(Player**)(exe_base_address + 0x17E0A8);
+            entity_list = (DWORD*)(exe_base_address + 0x18AC04);
+            num_players = (*(int*)(exe_base_address + 0x191FD4)); 
+
+        } while (!exe_base_address && !local_player && !entity_list && !num_players);
+
+        for (int i = 1; i <= num_players; i++ )
         {
-            Sleep(1000);
-            continue;
-        }
 
-        for (const auto &Player: entitylist.entities)
-        {
-
-            if (!entitylist.local_player)
+            DWORD* enemy_offset = (DWORD*)(*entity_list + (i * 4));
+            if (!enemy_offset)
+                continue;
+            Player* enemy = (Player*)(*enemy_offset);
+            if (!enemy)
                 continue;
 
-            if (Player == NULL || !Player)
+            if (!local_player)
                 continue;
 
-            if (Player->health > 100 || Player->health <= 0)
+            if (enemy->health > 100 || enemy->health <= 0)
                 continue;
             
-            float abspos_x = Math::origin_calc(Player->o.x, entitylist.local_player->o.x);
+            float abspos_x = Math::origin_calc(enemy->o.x, local_player->o.x);
 
-            float abspos_y = Math::origin_calc(Player->o.y, entitylist.local_player->o.y);
+            float abspos_y = Math::origin_calc(enemy->o.y, local_player->o.y);
 
-            float abspos_z = Math::origin_calc(Player->o.z, entitylist.local_player->o.z);
+            float abspos_z = Math::origin_calc(enemy->o.z, local_player->o.z);
 
             float azimuth_xy = atan2f(abspos_y, abspos_x);
 
@@ -63,16 +68,6 @@ void Aimbot::do_aimbot()
                 closest_yaw = yaw + 90;
                 closest_pitch = pitch;
             }
-
-            if (player_index < entitylist.num_players)
-            {
-                player_index++;
-            }
-
-            if (player_index >= entitylist.num_players)
-            {
-                player_index = 1;
-            }
         }
 
         if (closest_pitch == NULL || closest_yaw == NULL)
@@ -81,8 +76,8 @@ void Aimbot::do_aimbot()
         if (!GetAsyncKeyState(VK_XBUTTON2))
             continue;
 
-        entitylist.local_player->pitch = closest_pitch;
-        entitylist.local_player->yaw = closest_yaw;
+        local_player->pitch = closest_pitch;
+        local_player->yaw = closest_yaw;
 
         Sleep(1);
     }

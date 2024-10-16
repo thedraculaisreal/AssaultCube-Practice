@@ -1,6 +1,6 @@
 #include "classes.h"
 
-void EntityList::loop()
+/*void EntityList::loop()
 {
 
 	do {
@@ -31,7 +31,7 @@ void EntityList::loop()
 			if (i > num_players)
 				continue;
 
-			if (entitylist.num_players > 32 || entitylist.num_players <= 0)
+			if (num_players > 32 || num_players <= 0)
 				continue;
 
 			DWORD* enemy_offset = (DWORD*)(*entity_list + (i * 4));
@@ -48,4 +48,4 @@ void EntityList::loop()
 		entities.clear();
 		entities.assign(list.begin(), list.end());
 	}
-}
+}*/

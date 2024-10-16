@@ -3,12 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <Windows.h>
-
-class Vector3
-{
-public:
-    float x, y, z;
-};
+#include "../math/math.h"
 
 class Player
 {
@@ -28,7 +23,7 @@ public:
     int32_t Team; //0x0308
 }; //Size: 0x0450
 
-class EntityList
+/*class EntityList
 {
 public:
 
@@ -43,4 +38,4 @@ public:
     void loop();
 };
 
-inline EntityList entitylist;
+inline EntityList entitylist;*/
