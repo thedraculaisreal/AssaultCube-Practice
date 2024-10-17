@@ -1,20 +1,16 @@
 #pragma once
 #include "../math/math.h"
-#include "../classes/classes.h"
+#include "../source/constants.h"
 
 #define MAX_PLAYERS 32
 
 namespace Aimbot
 {
+	float closest_player{ -1.0f };
+	float closest_yaw{ NULL };
+	float closest_pitch{ NULL };
 
-	inline uintptr_t exe_base_address;
-
-	inline Player* local_player;
-
-	inline DWORD* entity_list;
-
-	inline int num_players;
+	void get_nearest_player();
 
 	void do_aimbot();
-
 };
