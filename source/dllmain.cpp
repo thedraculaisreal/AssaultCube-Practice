@@ -10,18 +10,20 @@
 #include "menu.h"
 #include "detours.h"
 
-void aimbot(const HMODULE hModule) noexcept
+void hacks(const HMODULE hModule) noexcept
 {
     while (!GetAsyncKeyState(VK_DELETE) & 0x1)
     {
         reset_pointers();
 
-        Aimbot::do_aimbot();
+        aimbot.do_aimbot();
 
         if (GetAsyncKeyState(VK_INSERT) & 0x1)
         {
-            Menu::toggle_menu;
+            Menu::toggle_menu();
         }
+
+        Sleep(1);
     }
 
     FreeLibraryAndExitThread(hModule, 0);
@@ -78,10 +80,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 {
     if (ul_reason_for_call == 1)
     {
-        DisableThreadLibraryCalls(hModule);
+            DisableThreadLibraryCalls(hModule);
         const auto thread2 = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(hook), hModule, 0, nullptr);
         const auto thread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(console), hModule, 0, nullptr);
-        const auto thread3 = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(aimbot), hModule, 0, nullptr);
+        const auto thread3 = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(hacks), hModule, 0, nullptr);
         if (thread)
             CloseHandle(thread);
         if (thread2)

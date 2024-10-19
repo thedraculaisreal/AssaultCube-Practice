@@ -4,13 +4,21 @@
 
 #define MAX_PLAYERS 32
 
-namespace Aimbot
+class Aimbot
 {
+
+public:
+
+	void do_aimbot();
+
+private:
+
 	float closest_player{ -1.0f };
 	float closest_yaw{ NULL };
 	float closest_pitch{ NULL };
 
 	void get_nearest_player();
 
-	void do_aimbot();
 };
+
+inline Aimbot aimbot;

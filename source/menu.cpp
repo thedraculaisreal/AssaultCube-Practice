@@ -110,6 +110,10 @@ BOOL __stdcall Menu::new_swap_buffers(HDC hdc)
 	wglMakeCurrent(hdc, my_context);
 	Menu::start_render();
 	Menu::render();
+	Menu::end_render();
+
+	wglMakeCurrent(hdc, game_context);
+	return original_swap_buffers(hdc);
 }
 
 void Menu::start_render()

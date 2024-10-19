@@ -1,6 +1,6 @@
 #include "constants.h"
 
-uintptr_t exe_base_address = (uintptr_t)GetModuleHandle(nullptr);
+extern uintptr_t exe_base_address = (uintptr_t)GetModuleHandle(nullptr);
 extern Player* local_player = *(Player**)(exe_base_address + 0x17E0A8);
 extern DWORD* entity_list = (DWORD*)(exe_base_address + 0x18AC04);
 extern int num_players = (*(int*)(exe_base_address + 0x191FD4));

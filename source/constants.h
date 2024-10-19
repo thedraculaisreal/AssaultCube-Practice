@@ -3,7 +3,7 @@
 #include <vector>
 #include "../classes/classes.h"
 
-uintptr_t exe_base_address;
+extern uintptr_t exe_base_address;
 extern Player* local_player;
 extern DWORD* entity_list;
 extern int num_players;
